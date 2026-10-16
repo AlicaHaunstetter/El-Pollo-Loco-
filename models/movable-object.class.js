@@ -11,6 +11,7 @@ class MovableObject {
   speedY = 0;
   acceleration = 1.5;
   energy = 100;
+  lastHit = 0;
 
   offset = {
     top: 0,
@@ -63,7 +64,15 @@ class MovableObject {
     this.energy -= 20;
     if (this.energy <= 0) {
       this.energy = 0;
+    } else {
+      this.lastHit = new Date().getTime();
     }
+  }
+
+  isHurt() {
+    let timepassed = new Date().getTime() - this.lastHit;
+    timepassed = timepassed / 1000;
+    return timepassed < 1;
   }
 
   isDead() {
