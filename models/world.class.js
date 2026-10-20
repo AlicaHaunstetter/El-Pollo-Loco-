@@ -76,9 +76,14 @@ class World {
 
   run() {
     setInterval(() => {
+      this.checkJumpOnChicken();
       this.checkCollisions();
       this.checkThrowObjects();
     }, 100);
+
+    setInterval(() => {
+      this.checkJumpOnChicken();
+    }, 1000 / 60);
   }
 
   checkThrowObjects() {
@@ -93,10 +98,33 @@ class World {
 
   checkCollisions() {
     this.level.enemies.forEach((enemy) => {
-      if (this.character.isColliding(enemy)) {
+      if (this.character.isColliding(enemy) && !enemy.isDead()) {
         this.character.hit();
         this.statusBar.setPercentage(this.character.energy);
       }
     });
+  }
+
+  checkJumpOnChicken() {
+    this.level.enemies.forEach((enemy) => {
+      if (
+        enemy instanceof Chicken &&
+        !enemy.isDead() &&
+        this.character.isColliding(enemy) &&
+        this.character.isAboveGround() &&
+        this.character.speedY < 0
+      ) {
+        this.killChicken(enemy);
+      }
+    });
+  }
+
+  killChicken(chicken) {
+    chicken.energy = 0;
+    this.character.speedY = 15;
+    setTimeout(() => {
+      let index = this.level.enemies.indexOf(chicken);
+      this.level.enemies.splice(index, 1);
+    }, 2000);
   }
 }
