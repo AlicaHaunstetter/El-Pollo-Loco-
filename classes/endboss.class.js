@@ -58,6 +58,7 @@ class Endboss extends MovableObject {
 
   world;
   hadFirstContact = false;
+  lastTurn = 0;
 
   /**
    * Creates the endboss, preloads all images and starts the animations.
@@ -82,17 +83,28 @@ class Endboss extends MovableObject {
   }
 
   /**
-   * Walks towards the character once the intro is finished.
+   * Walks in the current viewing direction once the intro is finished.
    */
   moveEndboss() {
     if (this.canMove()) {
-      if (this.distanceToCharacter() > 0) {
+      this.updateDirection();
+      if (this.otherDirection) {
         this.moveRight();
-        this.otherDirection = true;
       } else {
         this.moveLeft();
-        this.otherDirection = false;
       }
+    }
+  }
+
+  /**
+   * Turns towards the character, but at most once every 2 seconds.
+   */
+  updateDirection() {
+    let timePassed = new Date().getTime() - this.lastTurn;
+    let characterIsRight = this.distanceToCharacter() > 0;
+    if (timePassed > 2000 && characterIsRight != this.otherDirection) {
+      this.otherDirection = characterIsRight;
+      this.lastTurn = new Date().getTime();
     }
   }
 
