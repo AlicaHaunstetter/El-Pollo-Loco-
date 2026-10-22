@@ -141,7 +141,6 @@ class World {
         enemy instanceof Chicken &&
         !enemy.isDead() &&
         this.character.isColliding(enemy) &&
-        this.character.isAboveGround() &&
         this.character.speedY < 0
       ) {
         this.killChicken(enemy);
