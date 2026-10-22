@@ -1,3 +1,6 @@
+/**
+ * The endboss. Plays an intro when first seen, then follows and attacks the character.
+ */
 class Endboss extends MovableObject {
   height = 400;
   width = 300;
@@ -56,6 +59,9 @@ class Endboss extends MovableObject {
   world;
   hadFirstContact = false;
 
+  /**
+   * Creates the endboss, preloads all images and starts the animations.
+   */
   constructor() {
     super().loadImage(this.IMAGES_ALERT[0]);
     this.loadImages(this.IMAGES_ALERT);
@@ -67,36 +73,59 @@ class Endboss extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Starts the movement loop and the animation loop.
+   */
   animate() {
-    setInterval(() => {
-      if (this.hadFirstContact && this.currentImage >= this.IMAGES_ALERT.length && !this.isDead()) {
-        if (this.distanceToCharacter() > 0) {
-          this.moveRight();
-          this.otherDirection = true;
-        } else {
-          this.moveLeft();
-          this.otherDirection = false;
-        }
-      }
-    }, 1000 / 60);
-
-    setInterval(() => {
-      if (this.isDead()) {
-        this.playDeadAnimation();
-      } else if (this.isHurt()) {
-        this.playAnimation(this.IMAGES_HURT);
-      } else if (!this.hadFirstContact) {
-        this.checkFirstContact();
-      } else if (this.currentImage < this.IMAGES_ALERT.length) {
-        this.playAnimation(this.IMAGES_ALERT);
-      } else if (this.isNearCharacter()) {
-        this.playAnimation(this.IMAGES_ATTACK);
-      } else {
-        this.playAnimation(this.IMAGES_WALK);
-      }
-    }, 200);
+    setStoppableInterval(() => this.moveEndboss(), 1000 / 60);
+    setStoppableInterval(() => this.playEndbossAnimation(), 200);
   }
 
+  /**
+   * Walks towards the character once the intro is finished.
+   */
+  moveEndboss() {
+    if (this.canMove()) {
+      if (this.distanceToCharacter() > 0) {
+        this.moveRight();
+        this.otherDirection = true;
+      } else {
+        this.moveLeft();
+        this.otherDirection = false;
+      }
+    }
+  }
+
+  /**
+   * Checks whether the endboss is allowed to walk.
+   * @returns {boolean} True after the intro as long as the endboss is alive.
+   */
+  canMove() {
+    return this.hadFirstContact && this.currentImage >= this.IMAGES_ALERT.length && !this.isDead();
+  }
+
+  /**
+   * Chooses the animation that fits the current state of the endboss.
+   */
+  playEndbossAnimation() {
+    if (this.isDead()) {
+      this.playDeadAnimation();
+    } else if (this.isHurt()) {
+      this.playAnimation(this.IMAGES_HURT);
+    } else if (!this.hadFirstContact) {
+      this.checkFirstContact();
+    } else if (this.currentImage < this.IMAGES_ALERT.length) {
+      this.playAnimation(this.IMAGES_ALERT);
+    } else if (this.isNearCharacter()) {
+      this.playAnimation(this.IMAGES_ATTACK);
+    } else {
+      this.playAnimation(this.IMAGES_WALK);
+    }
+  }
+
+  /**
+   * Starts the intro as soon as the endboss comes into view.
+   */
   checkFirstContact() {
     if (this.world.character.x > this.x - 620) {
       this.hadFirstContact = true;
@@ -104,10 +133,18 @@ class Endboss extends MovableObject {
     }
   }
 
+  /**
+   * Checks whether the character is close enough for an attack.
+   * @returns {boolean} True if the centers are less than 240 px apart.
+   */
   isNearCharacter() {
     return Math.abs(this.distanceToCharacter()) < 240;
   }
 
+  /**
+   * Calculates the distance between the center of the character and the center of the endboss.
+   * @returns {number} Positive if the character is on the right, negative if on the left.
+   */
   distanceToCharacter() {
     let characterCenter = this.world.character.x + this.world.character.width / 2;
     let bossCenter = this.x + this.width / 2;

@@ -1,3 +1,6 @@
+/**
+ * A status bar for health, coins, bottles or the endboss.
+ */
 class StatusBar extends DrawableObject {
   IMAGES_STATUS_HEART = [
     "img/7_statusbars/1_statusbar/2_statusbar_health/green/0.png",
@@ -38,8 +41,29 @@ class StatusBar extends DrawableObject {
   images;
   percentage = 100;
 
+  /**
+   * Creates a status bar.
+   * @param {string} type - "heart", "coin", "bottle" or "endboss".
+   * @param {number} x - Horizontal position.
+   * @param {number} y - Vertical position.
+   * @param {number} percentage - Start value from 0 to 100.
+   */
   constructor(type, x, y, percentage) {
     super();
+    this.selectImages(type);
+    this.loadImages(this.images);
+    this.x = x;
+    this.y = y;
+    this.width = 200;
+    this.height = 60;
+    this.setPercentage(percentage);
+  }
+
+  /**
+   * Selects the image set that belongs to the type.
+   * @param {string} type - "heart", "coin", "bottle" or "endboss".
+   */
+  selectImages(type) {
     if (type == "heart") {
       this.images = this.IMAGES_STATUS_HEART;
     } else if (type == "coin") {
@@ -49,20 +73,22 @@ class StatusBar extends DrawableObject {
     } else if (type == "endboss") {
       this.images = this.IMAGES_STATUS_ENDBOSS;
     }
-    this.loadImages(this.images);
-    this.x = x;
-    this.y = y;
-    this.width = 200;
-    this.height = 60;
-    this.setPercentage(percentage);
   }
 
+  /**
+   * Sets a new value and shows the matching image.
+   * @param {number} percentage - New value from 0 to 100.
+   */
   setPercentage(percentage) {
     this.percentage = percentage;
     let path = this.images[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 
+  /**
+   * Finds the image that matches the current value. The bar is only empty at exactly 0.
+   * @returns {number} Index of the image from 0 to 5.
+   */
   resolveImageIndex() {
     if (this.percentage >= 100) {
       return 5;

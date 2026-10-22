@@ -1,3 +1,6 @@
+/**
+ * A normal or small chicken that walks to the left.
+ */
 class Chicken extends MovableObject {
   height = 70;
   width = 70;
@@ -29,25 +32,17 @@ class Chicken extends MovableObject {
   imagesWalking;
   imagesDead;
 
+  /**
+   * Creates a chicken of the given type near the given position.
+   * @param {string} type - "normal" or "small".
+   * @param {number} x - Base position, a random distance of up to 200 px is added.
+   */
   constructor(type, x) {
     super();
     if (type == "small") {
-      this.imagesWalking = this.IMAGES_WALKING_SMALL;
-      this.imagesDead = this.IMAGES_DEAD_SMALL;
-      this.height = 50;
-      this.width = 50;
-      this.y = 315;
-      this.offset = {
-        top: 0,
-        left: 21,
-        right: 21,
-        bottom: 21,
-      };
-      this.speed = 0.5 + Math.random() * 0.5;
+      this.setSmallChicken();
     } else {
-      this.imagesWalking = this.IMAGES_WALKING_NORMAL;
-      this.imagesDead = this.IMAGES_DEAD_NORMAL;
-      this.speed = 0.15 + Math.random() * 0.5;
+      this.setNormalChicken();
     }
     this.x = x + Math.random() * 200;
     this.loadImage(this.imagesWalking[0]);
@@ -56,14 +51,44 @@ class Chicken extends MovableObject {
     this.animate();
   }
 
+  /**
+   * Sets images, size, hitbox and speed of a small chicken.
+   */
+  setSmallChicken() {
+    this.imagesWalking = this.IMAGES_WALKING_SMALL;
+    this.imagesDead = this.IMAGES_DEAD_SMALL;
+    this.height = 50;
+    this.width = 50;
+    this.y = 315;
+    this.offset = {
+      top: 0,
+      left: 21,
+      right: 21,
+      bottom: 21,
+    };
+    this.speed = 0.5 + Math.random() * 0.5;
+  }
+
+  /**
+   * Sets images and speed of a normal chicken.
+   */
+  setNormalChicken() {
+    this.imagesWalking = this.IMAGES_WALKING_NORMAL;
+    this.imagesDead = this.IMAGES_DEAD_NORMAL;
+    this.speed = 0.15 + Math.random() * 0.5;
+  }
+
+  /**
+   * Starts the movement loop and the animation loop.
+   */
   animate() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (!this.isDead()) {
         this.moveLeft();
       }
     }, 1000 / 60);
 
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.isDead()) {
         this.playAnimation(this.imagesDead);
       } else {

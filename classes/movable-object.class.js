@@ -1,3 +1,6 @@
+/**
+ * Base class for all objects that move, collide, take damage or die.
+ */
 class MovableObject extends DrawableObject {
   speed = 0.15;
   otherDirection = false;
@@ -15,8 +18,11 @@ class MovableObject extends DrawableObject {
     bottom: 0,
   };
 
+  /**
+   * Starts the gravity loop that lets the object fall or jump.
+   */
   applyGravity() {
-    setInterval(() => {
+    setStoppableInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
         this.y -= this.speedY;
         this.speedY -= this.acceleration;
@@ -26,6 +32,11 @@ class MovableObject extends DrawableObject {
     }, 1000 / 25);
   }
 
+  /**
+   * Checks whether the object is in the air.
+   * Thrown objects are always in the air, a dead character lands lower.
+   * @returns {boolean} True if the object is above the ground.
+   */
   isAboveGround() {
     if (this instanceof ThrowableObject) {
       return true;
@@ -36,6 +47,11 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  /**
+   * Checks whether the hitbox of this object overlaps the hitbox of another object.
+   * @param {MovableObject} mo - The other object.
+   * @returns {boolean} True if both hitboxes overlap.
+   */
   isColliding(mo) {
     return (
       this.x + this.width - this.offset.right > mo.x + mo.offset.left &&
@@ -45,6 +61,9 @@ class MovableObject extends DrawableObject {
     );
   }
 
+  /**
+   * Reduces the energy by the damage per hit and remembers the time of the hit.
+   */
   hit() {
     this.energy -= this.damagePerHit;
     if (this.energy <= 0) {
@@ -54,16 +73,28 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  /**
+   * Checks whether the last hit was less than 500 ms ago.
+   * @returns {boolean} True while the object is hurt.
+   */
   isHurt() {
     let timepassed = new Date().getTime() - this.lastHit;
     timepassed = timepassed / 500;
     return timepassed < 1;
   }
 
+  /**
+   * Checks whether the object has no energy left.
+   * @returns {boolean} True if the object is dead.
+   */
   isDead() {
     return this.energy == 0;
   }
 
+  /**
+   * Shows the next image of an animation in a loop.
+   * @param {string[]} images - Paths of the animation images.
+   */
   playAnimation(images) {
     let i = this.currentImage % images.length;
     let path = images[i];
@@ -71,19 +102,31 @@ class MovableObject extends DrawableObject {
     this.currentImage++;
   }
 
+  /**
+   * Moves the object to the right by its speed.
+   */
   moveRight() {
     this.x += this.speed;
   }
 
+  /**
+   * Moves the object to the left by its speed.
+   */
   moveLeft() {
     this.x -= this.speed;
   }
 
+  /**
+   * Starts a jump.
+   */
   jump() {
     this.speedY = 30;
     this.currentImage = 0;
   }
 
+  /**
+   * Plays the dead animation once and stays on the last image.
+   */
   playDeadAnimation() {
     if (this.deadImage < this.IMAGES_DEAD.length) {
       this.img = this.imageCache[this.IMAGES_DEAD[this.deadImage]];
