@@ -29,7 +29,7 @@ class Chicken extends MovableObject {
   imagesWalking;
   imagesDead;
 
-  constructor(type) {
+  constructor(type, x) {
     super();
     if (type == "small") {
       this.imagesWalking = this.IMAGES_WALKING_SMALL;
@@ -43,14 +43,13 @@ class Chicken extends MovableObject {
         right: 21,
         bottom: 21,
       };
-      this.x = 700 + Math.random() * 500;
       this.speed = 0.5 + Math.random() * 0.5;
     } else {
       this.imagesWalking = this.IMAGES_WALKING_NORMAL;
       this.imagesDead = this.IMAGES_DEAD_NORMAL;
-      this.x = 200 + Math.random() * 500;
       this.speed = 0.15 + Math.random() * 0.5;
     }
+    this.x = x + Math.random() * 200;
     this.loadImage(this.imagesWalking[0]);
     this.loadImages(this.imagesWalking);
     this.loadImages(this.imagesDead);

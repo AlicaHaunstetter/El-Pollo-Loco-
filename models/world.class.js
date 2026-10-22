@@ -59,7 +59,6 @@ class World {
     }
 
     mo.draw(this.ctx);
-    mo.drawFrame(this.ctx);
 
     if (mo.otherDirection) {
       this.flipImageBack(mo);
@@ -80,6 +79,11 @@ class World {
 
   setWorld() {
     this.character.world = this;
+    this.level.enemies.forEach((enemy) => {
+      if (enemy instanceof Endboss) {
+        enemy.world = this;
+      }
+    });
   }
 
   run() {
@@ -88,6 +92,7 @@ class World {
       this.checkCollisions();
       this.checkCollectables();
       this.checkThrowObjects();
+      this.checkBottleHits();
     }, 100);
 
     setInterval(() => {
@@ -97,10 +102,11 @@ class World {
 
   checkThrowObjects() {
     if (this.keyboard.D && this.character.bottles > 0) {
-      let bottle = new ThrowableObject(
-        this.character.x + 70,
-        this.character.y + 20,
-      );
+      let x = this.character.x + 70;
+      if (this.character.otherDirection) {
+        x = this.character.x - 40;
+      }
+      let bottle = new ThrowableObject(x, this.character.y + 20, this.character.otherDirection);
       this.throwableObjects.push(bottle);
       this.character.bottles--;
       this.statusBarBottle.setPercentage(this.character.bottles * 20);
@@ -117,17 +123,29 @@ class World {
     });
   }
 
+  checkBottleHits() {
+    this.throwableObjects.forEach((bottle) => {
+      this.level.enemies.forEach((enemy) => {
+        if (enemy instanceof Endboss && !enemy.isDead() && bottle.isColliding(enemy)) {
+          enemy.hit();
+          this.statusBarEndboss.setPercentage(enemy.energy);
+          this.throwableObjects.splice(this.throwableObjects.indexOf(bottle), 1);
+        }
+      });
+    });
+  }
+
   checkCollectables() {
     this.level.coins.forEach((coin) => {
       if (this.character.isColliding(coin)) {
         this.character.coins++;
-        this.statusBarCoin.setPercentage(this.character.coins * 20);
+        this.statusBarCoin.setPercentage(this.character.coins * 10);
         this.level.coins.splice(this.level.coins.indexOf(coin), 1);
       }
     });
 
     this.level.bottles.forEach((bottle) => {
-      if (this.character.isColliding(bottle)) {
+      if (this.character.isColliding(bottle) && this.character.bottles < 5) {
         this.character.bottles++;
         this.statusBarBottle.setPercentage(this.character.bottles * 20);
         this.level.bottles.splice(this.level.bottles.indexOf(bottle), 1);

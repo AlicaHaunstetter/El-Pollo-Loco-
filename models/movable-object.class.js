@@ -5,6 +5,7 @@ class MovableObject extends DrawableObject {
   acceleration = 3.75;
   energy = 100;
   lastHit = 0;
+  damagePerHit = 10;
 
   offset = {
     top: 0,
@@ -42,7 +43,7 @@ class MovableObject extends DrawableObject {
   }
 
   hit() {
-    this.energy -= 10;
+    this.energy -= this.damagePerHit;
     if (this.energy <= 0) {
       this.energy = 0;
     } else {
