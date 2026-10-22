@@ -8,21 +8,58 @@ class StatusBar extends DrawableObject {
     "img/7_statusbars/1_statusbar/2_statusbar_health/green/100.png",
   ];
 
+  IMAGES_STATUS_COIN = [
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.png",
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.png",
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.png",
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.png",
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.png",
+    "img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.png",
+  ];
+
+  IMAGES_STATUS_BOTTLE = [
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/green/0.png",
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/green/20.png",
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/green/40.png",
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/green/60.png",
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/green/80.png",
+    "img/7_statusbars/1_statusbar/3_statusbar_bottle/green/100.png",
+  ];
+
+  IMAGES_STATUS_ENDBOSS = [
+    "img/7_statusbars/2_statusbar_endboss/green/green0.png",
+    "img/7_statusbars/2_statusbar_endboss/green/green20.png",
+    "img/7_statusbars/2_statusbar_endboss/green/green40.png",
+    "img/7_statusbars/2_statusbar_endboss/green/green60.png",
+    "img/7_statusbars/2_statusbar_endboss/green/green80.png",
+    "img/7_statusbars/2_statusbar_endboss/green/green100.png",
+  ];
+
+  images;
   percentage = 100;
 
-  constructor() {
+  constructor(type, x, y, percentage) {
     super();
-    this.loadImages(this.IMAGES_STATUS_HEART);
-    this.x = 50;
-    this.y = 0;
+    if (type == "heart") {
+      this.images = this.IMAGES_STATUS_HEART;
+    } else if (type == "coin") {
+      this.images = this.IMAGES_STATUS_COIN;
+    } else if (type == "bottle") {
+      this.images = this.IMAGES_STATUS_BOTTLE;
+    } else if (type == "endboss") {
+      this.images = this.IMAGES_STATUS_ENDBOSS;
+    }
+    this.loadImages(this.images);
+    this.x = x;
+    this.y = y;
     this.width = 200;
     this.height = 60;
-    this.setPercentage(100);
+    this.setPercentage(percentage);
   }
 
   setPercentage(percentage) {
     this.percentage = percentage;
-    let path = this.IMAGES_STATUS_HEART[this.resolveImageIndex()];
+    let path = this.images[this.resolveImageIndex()];
     this.img = this.imageCache[path];
   }
 
