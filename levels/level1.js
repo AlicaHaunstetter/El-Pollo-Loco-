@@ -50,4 +50,18 @@ const level1 = new Level(
       720 * 3,
     ),
   ],
+  [
+    new CollectableObject("coin", 400, 150),
+    new CollectableObject("coin", 480, 100),
+    new CollectableObject("coin", 560, 150),
+    new CollectableObject("coin", 1200, 150),
+    new CollectableObject("coin", 1280, 150),
+  ],
+  [
+    new CollectableObject("bottle", 300, 290),
+    new CollectableObject("bottle", 800, 290),
+    new CollectableObject("bottle", 1000, 290),
+    new CollectableObject("bottle", 1500, 290),
+    new CollectableObject("bottle", 1800, 290),
+  ],
 );

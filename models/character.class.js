@@ -75,6 +75,8 @@ class Character extends MovableObject {
   ];
 
   world;
+  coins = 0;
+  bottles = 0;
   lastMove = new Date().getTime();
 
   constructor() {
