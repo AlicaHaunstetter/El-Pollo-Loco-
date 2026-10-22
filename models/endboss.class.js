@@ -55,7 +55,6 @@ class Endboss extends MovableObject {
 
   world;
   hadFirstContact = false;
-  deadImage = 0;
 
   constructor() {
     super().loadImage(this.IMAGES_ALERT[0]);
@@ -113,12 +112,5 @@ class Endboss extends MovableObject {
     let characterCenter = this.world.character.x + this.world.character.width / 2;
     let bossCenter = this.x + this.width / 2;
     return characterCenter - bossCenter;
-  }
-
-  playDeadAnimation() {
-    if (this.deadImage < this.IMAGES_DEAD.length) {
-      this.img = this.imageCache[this.IMAGES_DEAD[this.deadImage]];
-      this.deadImage++;
-    }
   }
 }

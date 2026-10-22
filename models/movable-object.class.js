@@ -6,6 +6,7 @@ class MovableObject extends DrawableObject {
   energy = 100;
   lastHit = 0;
   damagePerHit = 10;
+  deadImage = 0;
 
   offset = {
     top: 0,
@@ -28,6 +29,8 @@ class MovableObject extends DrawableObject {
   isAboveGround() {
     if (this instanceof ThrowableObject) {
       return true;
+    } else if (this.isDead()) {
+      return this.y < 110;
     } else {
       return this.y < 120;
     }
@@ -79,5 +82,12 @@ class MovableObject extends DrawableObject {
   jump() {
     this.speedY = 30;
     this.currentImage = 0;
+  }
+
+  playDeadAnimation() {
+    if (this.deadImage < this.IMAGES_DEAD.length) {
+      this.img = this.imageCache[this.IMAGES_DEAD[this.deadImage]];
+      this.deadImage++;
+    }
   }
 }

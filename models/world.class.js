@@ -28,7 +28,6 @@ class World {
     this.addObjectsToMap(this.level.coins);
     this.addObjectsToMap(this.level.bottles);
     this.addObjectsToMap(this.level.enemies);
-    this.addToMap(this.character);
     this.addObjectsToMap(this.throwableObjects);
 
     this.ctx.translate(-this.camera_x, 0);
@@ -36,6 +35,10 @@ class World {
     this.addToMap(this.statusBarCoin);
     this.addToMap(this.statusBarBottle);
     this.addToMap(this.statusBarEndboss);
+
+    this.ctx.translate(this.camera_x, 0);
+    this.addToMap(this.character);
+    this.ctx.translate(-this.camera_x, 0);
 
     let self = this;
     requestAnimationFrame(function () {
@@ -84,15 +87,19 @@ class World {
 
   run() {
     setInterval(() => {
-      this.checkJumpOnChicken();
-      this.checkCollisions();
-      this.checkCollectables();
-      this.checkThrowObjects();
-      this.checkBottleHits();
+      if (!this.character.isDead()) {
+        this.checkJumpOnChicken();
+        this.checkCollisions();
+        this.checkCollectables();
+        this.checkThrowObjects();
+        this.checkBottleHits();
+      }
     }, 100);
 
     setInterval(() => {
-      this.checkJumpOnChicken();
+      if (!this.character.isDead()) {
+        this.checkJumpOnChicken();
+      }
     }, 1000 / 60);
   }
 

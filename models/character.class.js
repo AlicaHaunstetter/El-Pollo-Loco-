@@ -94,32 +94,43 @@ class Character extends MovableObject {
 
   animate() {
     setInterval(() => {
-      // this.walking_sound.pause();
-      if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-        this.moveRight();
-        this.otherDirection = false;
-        // this.walking_sound.play();
+      if (!this.isDead()) {
+        // this.walking_sound.pause();
+        if (
+          this.world.keyboard.RIGHT &&
+          this.x < this.world.level.level_end_x
+        ) {
+          this.moveRight();
+          this.otherDirection = false;
+          // this.walking_sound.play();
+        }
       }
     }, 1000 / 60);
 
     setInterval(() => {
-      if (this.world.keyboard.LEFT && this.x > 0) {
-        this.moveLeft();
-        this.otherDirection = true;
-        // this.walking_sound.play();
-      }
+      if (!this.isDead()) {
+        if (this.world.keyboard.LEFT && this.x > 0) {
+          this.moveLeft();
+          this.otherDirection = true;
+          // this.walking_sound.play();
+        }
 
-      if (this.world.keyboard.SPACE && !this.isAboveGround() && this.speedY == 0) {
-        this.jump();
-      }
+        if (
+          this.world.keyboard.SPACE &&
+          !this.isAboveGround() &&
+          this.speedY == 0
+        ) {
+          this.jump();
+        }
 
-      if (
-        this.world.keyboard.RIGHT ||
-        this.world.keyboard.LEFT ||
-        this.world.keyboard.SPACE ||
-        this.world.keyboard.D
-      ) {
-        this.lastMove = new Date().getTime();
+        if (
+          this.world.keyboard.RIGHT ||
+          this.world.keyboard.LEFT ||
+          this.world.keyboard.SPACE ||
+          this.world.keyboard.D
+        ) {
+          this.lastMove = new Date().getTime();
+        }
       }
 
       this.world.camera_x = -this.x + 100;
@@ -127,7 +138,10 @@ class Character extends MovableObject {
 
     setInterval(() => {
       if (this.isDead()) {
-        this.playAnimation(this.IMAGES_DEAD);
+        if (this.deadImage == 0) {
+          this.speedY = 32;
+        }
+        this.playDeadAnimation();
       } else if (this.isHurt()) {
         this.playAnimation(this.IMAGES_HURT);
         this.lastMove = new Date().getTime();
